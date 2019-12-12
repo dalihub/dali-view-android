@@ -34,7 +34,8 @@ unzip gradle-5.4.1-bin.zip
 cd -
 fi
 
-export PATH=$PATH:$HOME/gradle/gradle-5.4.1
+export PATH=$PATH:$HOME/gradle/gradle-5.4.1/bin
+echo 'sdk.dir='$(echo $ANDROID_SDK) > local.properties
 
 if [ ! -d "$DALI_DIR" ]; then
 export DALI_DIR=$(cd ..;pwd)
