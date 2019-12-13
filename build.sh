@@ -58,5 +58,9 @@ git clone --branch devel/master ssh://review.tizen.org:29418/platform/core/uifw/
 fi
 
 gradle wrapper
-gradle assemble
+if [ -z "$DEBUG" ]; then
+./gradlew assembleRelease
+else
+./gradlew assembleDebug
+fi
 
