@@ -27,30 +27,34 @@ public class DaliView extends SurfaceView implements SurfaceHolder.Callback {
         super(context, attrs, defStyleAttr);
         getHolder().addCallback(this);
 
-        System.loadLibrary("dali-core");
-        System.loadLibrary("dali-adaptor");
-        System.loadLibrary("dali-toolkit");
+        if (nativeHandle == 0) {
+            System.loadLibrary("dali-core");
+            System.loadLibrary("dali-adaptor");
+            System.loadLibrary("dali-toolkit");
 
-        System.loadLibrary("daliview");
-        nativeOnConfigure(context.getAssets(), context.getFilesDir().getAbsolutePath());
+            System.loadLibrary("daliview");
+            nativeOnConfigure(context.getAssets(), context.getFilesDir().getAbsolutePath());
 
-        System.loadLibrary("dalidemo");
-        nativeHandle = nativeOnCreate();
+            System.loadLibrary("dalidemo");
+            nativeHandle = nativeOnCreate();
+        }
     }
 
     public DaliView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         getHolder().addCallback(this);
 
-        System.loadLibrary("dali-core");
-        System.loadLibrary("dali-adaptor");
-        System.loadLibrary("dali-toolkit");
+        if (nativeHandle == 0) {
+            System.loadLibrary("dali-core");
+            System.loadLibrary("dali-adaptor");
+            System.loadLibrary("dali-toolkit");
 
-        System.loadLibrary("daliview");
-        nativeOnConfigure(context.getAssets(), context.getFilesDir().getAbsolutePath());
+            System.loadLibrary("daliview");
+            nativeOnConfigure(context.getAssets(), context.getFilesDir().getAbsolutePath());
 
-        System.loadLibrary("dalidemo");
-        nativeHandle = nativeOnCreate();
+            System.loadLibrary("dalidemo");
+            nativeHandle = nativeOnCreate();
+        }
     }
 
     @Override
@@ -91,6 +95,7 @@ public class DaliView extends SurfaceView implements SurfaceHolder.Callback {
     protected void finalize() throws Throwable {
         try {
             nativeOnFinalize(nativeHandle);
+            nativeHandle = 0;
         } finally {
             super.finalize();
         }
@@ -182,7 +187,8 @@ public class DaliView extends SurfaceView implements SurfaceHolder.Callback {
             callback.resume();
     }
 
-    public long nativeHandle = 0;
+    // Only one instance of DALi per process
+    public static long nativeHandle = 0;
     public native void nativeOnConfigure(AssetManager assetManager, String dataPath);
     public native long nativeOnCreate();
     public native void nativeOnResume(long handle);

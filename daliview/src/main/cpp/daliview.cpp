@@ -288,6 +288,8 @@ extern "C" JNIEXPORT void JNICALL Java_com_sec_daliview_DaliView_nativeOnFinaliz
 
     Dali::RefObject* refObject = reinterpret_cast<Dali::RefObject*>( handle );
     refObject->Unreference();
+
+    Dali::Integration::AndroidFramework::Delete();
   }
 }
 
