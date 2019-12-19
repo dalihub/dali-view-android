@@ -5,6 +5,9 @@ echo "Using ROOT_DIR=\"$ROOT_DIR\""
 echo "Using DALI_DIR=\"$DALI_DIR\""
 export DALI_DIR=$DALI_DIR
 
+[ -z $TARGET ] && export TARGET=arm64-v8a
+echo "Using TARGET=\"$TARGET\""
+
 if [ ! -z $http_proxy ]
 then
   proxyFull=${http_proxy/http:\/\/}

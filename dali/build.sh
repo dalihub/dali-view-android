@@ -25,7 +25,7 @@ if [ ! -z "$DEBUG" ]; then
 export ENABLE_TRACE=ON
 fi
 
-ANDROID_PLATFORM=26 ANDROID_ABI=armeabi-v7a ./build_core.sh
-ANDROID_PLATFORM=26 ANDROID_ABI=armeabi-v7a ./build_adaptor.sh
-ANDROID_PLATFORM=26 ANDROID_ABI=armeabi-v7a ./build_toolkit.sh
+ANDROID_PLATFORM=26 ANDROID_ABI=${TARGET} ./build_core.sh
+ANDROID_PLATFORM=26 ANDROID_ABI=${TARGET} ./build_adaptor.sh
+ANDROID_PLATFORM=26 ANDROID_ABI=${TARGET} ./build_toolkit.sh
 

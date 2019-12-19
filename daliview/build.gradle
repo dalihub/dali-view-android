@@ -1,6 +1,7 @@
 apply plugin: 'com.android.library'
 
 def buildType = "debug"
+def androidABI = System.getenv('TARGET')
 
 android {
     signingConfigs {
@@ -31,7 +32,7 @@ android {
     buildTypes {
         debug {
             ndk {
-                abiFilters "armeabi-v7a"
+                abiFilters androidABI
             }
             buildType = "debug"
         }
@@ -39,14 +40,22 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             ndk {
-                abiFilters "armeabi-v7a"
+                abiFilters androidABI
             }
             buildType = "release"
         }
     }
     packagingOptions {
-        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
-        pickFirst 'lib/armeabi-v7a/libdaliview.so'
+        if( androidABI == "arm64-v8a" )
+        {
+          pickFirst 'lib/arm64-v8a/libc++_shared.so'
+          pickFirst 'lib/arm64-v8a/libdaliview.so'
+        }
+        else
+        {
+          pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+          pickFirst 'lib/armeabi-v7a/libdaliview.so'
+        }
     }
     sourceSets {
         main {
@@ -78,7 +87,7 @@ dependencies {
 task buildDaliDependencies(type:Exec) {
     def daliDir = file('../../dali-env/android').getAbsolutePath()
     environment "PREFIX", daliDir
-    environment "ANDROID_ABI", "armeabi-v7a"
+    environment "ANDROID_ABI", androidABI
     environment "ANDROID_PLATFORM", "26"
     if (buildType == 'debug')
         environment "DEBUG", "1"
