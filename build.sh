@@ -48,24 +48,24 @@ if [ ! -d "$ROOT_DIR/gradle/gradle-5.4.1" ]; then
   wget https://services.gradle.org/distributions/gradle-5.4.1-bin.zip
   unzip gradle-5.4.1-bin.zip
   cd -
+fi
 
-  GRADLE_PROPERTIES_FILE=gradle.properties
-  if [ ! -f $GRADLE_PROPERTIES_FILE ]
+GRADLE_PROPERTIES_FILE=gradle.properties
+if [ ! -f $GRADLE_PROPERTIES_FILE ]
+then
+  echo "org.gradle.jvmargs=-Xmx1536m" > $GRADLE_PROPERTIES_FILE
+  if [ ! -z $http_proxy ]
   then
-    echo "org.gradle.jvmargs=-Xmx1536m" > $GRADLE_PROPERTIES_FILE
-    if [ ! -z $http_proxy ]
-    then
-      echo "systemProp.http.proxyHost=$proxyHost" >> $GRADLE_PROPERTIES_FILE
-      echo "systemProp.http.proxyPort=$proxyPort" >> $GRADLE_PROPERTIES_FILE
+    echo "systemProp.http.proxyHost=$proxyHost" >> $GRADLE_PROPERTIES_FILE
+    echo "systemProp.http.proxyPort=$proxyPort" >> $GRADLE_PROPERTIES_FILE
 
-      if [ ! -z $https_proxy ]
-      then
-        httpsProxyFull=${https_proxy/https:\/\/}
-        httpsProxyHost=$(echo $httpsProxyFull | cut -d: -f 1)
-        httpsProxyPort=$(echo $httpsProxyFull | cut -d: -f 2)
-        echo "systemProp.https.proxyHost=$httpsProxyHost" >> $GRADLE_PROPERTIES_FILE
-        echo "systemProp.https.proxyPort=$httpsProxyPort" >> $GRADLE_PROPERTIES_FILE
-      fi
+    if [ ! -z $https_proxy ]
+    then
+      httpsProxyFull=${https_proxy/https:\/\/}
+      httpsProxyHost=$(echo $httpsProxyFull | cut -d: -f 1)
+      httpsProxyPort=$(echo $httpsProxyFull | cut -d: -f 2)
+      echo "systemProp.https.proxyHost=$httpsProxyHost" >> $GRADLE_PROPERTIES_FILE
+      echo "systemProp.https.proxyPort=$httpsProxyPort" >> $GRADLE_PROPERTIES_FILE
     fi
   fi
 fi
