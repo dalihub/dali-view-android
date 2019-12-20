@@ -5,6 +5,9 @@ echo "Using ROOT_DIR=\"$ROOT_DIR\""
 echo "Using DALI_DIR=\"$DALI_DIR\""
 export DALI_DIR=$DALI_DIR
 
+[ -z $TARGET ] && export TARGET=armeabi-v7a
+echo "Using TARGET=\"$TARGET\""
+
 if [ ! -z $http_proxy ]
 then
   proxyFull=${http_proxy/http:\/\/}
@@ -86,6 +89,14 @@ for repo in $repos
 do
   [ ! -d "$DALI_DIR/$repo" ] && git clone $GitHubLocation/$repo.git $DALI_DIR/$repo
 done
+
+[[ -d .building ]] && [[ ! "$TARGET" = "$(basename .building/*)" ]] && gradle clean
+
+# Create a file with the target name.
+# Used to clean if the target is different than the current build.
+rm -fR .building
+mkdir .building
+touch .building/$TARGET
 
 gradle wrapper
 if [ -z "$DEBUG" ]; then
