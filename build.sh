@@ -90,7 +90,14 @@ do
   [ ! -d "$DALI_DIR/$repo" ] && git clone $GitHubLocation/$repo.git $DALI_DIR/$repo
 done
 
-gradle clean
+[[ -d .building ]] && [[ ! "$TARGET" = "$(basename .building/*)" ]] && gradle clean
+
+# Create a file with the target name.
+# Used to clean if the target is different than the current build.
+rm -fR .building
+mkdir .building
+touch .building/$TARGET
+
 gradle wrapper
 if [ -z "$DEBUG" ]; then
 ./gradlew assembleRelease
