@@ -5,6 +5,9 @@ echo "Using ROOT_DIR=\"$ROOT_DIR\""
 echo "Using DALI_DIR=\"$DALI_DIR\""
 export DALI_DIR=$DALI_DIR
 
+[ -z $TARGET ] && export TARGET=armeabi-v7a
+echo "Using TARGET=\"$TARGET\""
+
 if [ ! -z $http_proxy ]
 then
   proxyFull=${http_proxy/http:\/\/}
@@ -87,6 +90,7 @@ do
   [ ! -d "$DALI_DIR/$repo" ] && git clone $GitHubLocation/$repo.git $DALI_DIR/$repo
 done
 
+gradle clean
 gradle wrapper
 if [ -z "$DEBUG" ]; then
 ./gradlew assembleRelease
