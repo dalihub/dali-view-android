@@ -272,25 +272,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_sec_daliview_DaliView_nativeOnKeyEven
 extern "C" JNIEXPORT void JNICALL Java_com_sec_daliview_DaliView_nativeOnFinalize(JNIEnv* jenv, jobject obj, jlong handle)
 {
   DALI_LOG_RELEASE_INFO( "nativeOnFinalize handle(%lld)", handle );
-
-  if( handle )
-  {
-    AConfiguration* configuration = Dali::Integration::AndroidFramework::Get().GetApplicationConfiguration();
-    Dali::Integration::AndroidFramework::Get().OnTerminate();
-
-    if( configuration )
-    {
-      AConfiguration_delete( configuration );
-      Dali::Integration::AndroidFramework::Get().SetApplicationConfiguration( nullptr );
-    }
-
-    Dali::Integration::AndroidFramework::Get().SetApplicationAssets( nullptr );
-
-    Dali::RefObject* refObject = reinterpret_cast<Dali::RefObject*>( handle );
-    refObject->Unreference();
-
-    Dali::Integration::AndroidFramework::Delete();
-  }
+  // We don't have an option to cleanup existing DALi instance yet - needs major refactoring in DALi
 }
 
 extern "C" JNIEXPORT jboolean JNICALL Java_com_sec_daliview_DaliView_nativeOnCallback(JNIEnv* jenv, jclass clazz, jlong callback, jlong callbackData)
