@@ -95,7 +95,9 @@ public class DaliView extends SurfaceView implements SurfaceHolder.Callback {
     protected void finalize() throws Throwable {
         try {
             nativeOnFinalize(nativeHandle);
-            nativeHandle = 0;
+            // nativeHandle = 0;
+            // Keep the same instance of DALi for now until DALi cleanup is sorted.
+            // The application will be restarted by the system eventually.
         } finally {
             super.finalize();
         }
