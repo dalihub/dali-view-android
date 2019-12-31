@@ -17,3 +17,7 @@ fi
 if [ ! -d "$DALI_DIR" ]; then
 export DALI_DIR=$(cd ../../; pwd)
 fi
+
+if [ ! -d "$DALI_ENV_DIR" ]; then
+export DALI_ENV_DIR=$DALI_DIR/dali-env/android
+fi

@@ -2,6 +2,8 @@ apply plugin: 'com.android.library'
 
 def buildType = "debug"
 def androidABI = System.getenv('TARGET')
+def daliDir = System.getenv('DALI_DIR')
+def daliEnvDir = System.getenv('DALI_ENV_DIR')
 
 android {
     signingConfigs {
@@ -85,13 +87,12 @@ dependencies {
 }
 
 task buildDaliDependencies(type:Exec) {
-    def daliDir = file('../../dali-env/android').getAbsolutePath()
-    environment "PREFIX", daliDir
+    environment "PREFIX", daliEnvDir
     environment "ANDROID_ABI", androidABI
     environment "ANDROID_PLATFORM", "26"
     if (buildType == 'debug')
         environment "DEBUG", "1"
-    workingDir "../../android-dependencies/cmake"
+    workingDir file(daliDir + '/android-dependencies/cmake').getAbsolutePath()
     commandLine 'sh',  './buildall.sh'
 }
 
@@ -103,12 +104,12 @@ task buildDali(type:Exec) {
 }
 
 task cleanDaliEnv(type:Delete) {
-    def daliDir = file('../../dali-env/android').getAbsolutePath()
-    delete daliDir
+    if (file(daliEnvDir).exists())
+        delete daliEnvDir
 }
 
 task cleanDaliDependencies(type:Exec) {
-    workingDir "../../android-dependencies/cmake"
+    workingDir file(daliDir + '/android-dependencies/cmake').getAbsolutePath()
     commandLine 'sh',  './buildall.sh', 'clean'
 }
 

@@ -5,6 +5,10 @@ echo "Using ROOT_DIR=\"$ROOT_DIR\""
 echo "Using DALI_DIR=\"$DALI_DIR\""
 export DALI_DIR=$DALI_DIR
 
+[ -z $DALI_ENV_DIR ] && DALI_ENV_DIR=$DALI_DIR/dali-env/android
+echo "Using DALI_ENV_DIR=\"$DALI_ENV_DIR\""
+export DALI_ENV_DIR=$DALI_ENV_DIR
+
 [ -z $TARGET ] && export TARGET=armeabi-v7a
 echo "Using TARGET=\"$TARGET\""
 
