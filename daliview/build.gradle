@@ -109,6 +109,7 @@ task cleanDaliEnv(type:Delete) {
 }
 
 task cleanDaliDependencies(type:Exec) {
+    environment "ANDROID_ABI", androidABI
     workingDir file(daliDir + '/android-dependencies/cmake').getAbsolutePath()
     commandLine 'sh',  './buildall.sh', 'clean'
 }
