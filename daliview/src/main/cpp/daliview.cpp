@@ -32,6 +32,7 @@
 #include <dali/public-api/events/touch-point.h>
 #include <dali/public-api/events/key-event.h>
 #include <dali/devel-api/adaptor-framework/application-devel.h>
+#include <dali/devel-api/events/key-event-devel.h>
 #include <dali/integration-api/debug.h>
 #include <dali/integration-api/adaptor-framework/adaptor.h>
 #include <dali/integration-api/adaptor-framework/android/android-framework.h>
@@ -264,7 +265,7 @@ extern "C" JNIEXPORT void JNICALL Java_com_sec_daliview_DaliView_nativeOnKeyEven
       break;
   }
 
-  Dali::KeyEvent keyEvent( keyName, "", keyCode, 0, timestamp, state );
+  Dali::KeyEvent keyEvent = DevelKeyEvent::New(keyName, "", "", keyCode, 0, timestamp, state, "", "", Device::Class::NONE, Device::Subclass::NONE);
   Dali::Adaptor::Get().FeedKeyEvent( keyEvent );
 }
 
