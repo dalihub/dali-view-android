@@ -245,13 +245,13 @@ extern "C" JNIEXPORT void JNICALL Java_com_sec_daliview_DaliView_nativeOnKeyEven
 {
   DALI_LOG_RELEASE_INFO( "nativeOnKeyEvent handle(%lld), deviceId(%d), action(%d), keyCode(%d), timestamp(%lld)", handle, deviceId, action, keyCode, timestamp );
 
-  Dali::KeyEvent::State state = Dali::KeyEvent::Down;
+  Dali::KeyEvent::State state = Dali::KeyEvent::DOWN;
   switch ( action )
   {
     case AKEY_EVENT_ACTION_DOWN:
       break;
     case AKEY_EVENT_ACTION_UP:
-      state = Dali::KeyEvent::Up;
+      state = Dali::KeyEvent::UP;
       break;
   }
 
