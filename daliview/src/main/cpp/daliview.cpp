@@ -29,10 +29,10 @@
 #include <android/native_window.h>
 #include <android/native_window_jni.h>
 
-#include <dali/public-api/events/touch-point.h>
 #include <dali/public-api/events/key-event.h>
 #include <dali/devel-api/adaptor-framework/application-devel.h>
 #include <dali/devel-api/events/key-event-devel.h>
+#include <dali/devel-api/events/touch-point.h>
 #include <dali/integration-api/debug.h>
 #include <dali/integration-api/adaptor-framework/adaptor.h>
 #include <dali/integration-api/adaptor-framework/android/android-framework.h>
@@ -218,22 +218,22 @@ extern "C" JNIEXPORT void JNICALL Java_com_sec_daliview_DaliView_nativeOnTouchEv
 {
   DALI_LOG_RELEASE_INFO( "nativeOnTouchEvent handle(%lld), deviceId(%d), action(%d), x(%f), y(%f), timestamp(%lld)", handle, deviceId, action, x, y, timestamp );
 
-  Dali::TouchPoint::State state = Dali::TouchPoint::Down;
+  Dali::PointState::Type state = Dali::PointState::DOWN;
   switch ( action & AMOTION_EVENT_ACTION_MASK )
   {
     case AMOTION_EVENT_ACTION_DOWN:
       break;
     case AMOTION_EVENT_ACTION_UP:
-      state = Dali::TouchPoint::Up;
+      state = Dali::PointState::UP;
       break;
     case AMOTION_EVENT_ACTION_MOVE:
-      state = Dali::TouchPoint::Motion;
+      state = Dali::PointState::MOTION;
       break;
     case AMOTION_EVENT_ACTION_CANCEL:
-      state = Dali::TouchPoint::Interrupted;
+      state = Dali::PointState::INTERRUPTED;
       break;
     case AMOTION_EVENT_ACTION_OUTSIDE:
-      state = Dali::TouchPoint::Leave;
+      state = Dali::PointState::LEAVE;
       break;
   }
 
