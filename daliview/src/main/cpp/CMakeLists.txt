@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.4.1)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -frtti -w -Wall -std=gnu++11")
+SET(CMAKE_CXX_STANDARD 17)
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexceptions -frtti -w -Wall")
 
 # DALi
 set(DALI_ENV_DIR $ENV{DALI_ENV_DIR})
@@ -40,4 +42,3 @@ target_link_libraries(daliview
                       android
                       EGL
                       GLESv3)
-
