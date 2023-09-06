@@ -25,10 +25,18 @@ if [ ! -d "$ANDROID_SDK" ]; then
   if [ ! -d "$ROOT_DIR/Android/Sdk" ]; then
     mkdir -p "$ROOT_DIR/Android/Sdk"
     cd "$ROOT_DIR/Android/Sdk"
-    wget --quiet https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip
-    unzip -q sdk-tools-linux-4333796.zip
-    tools/bin/sdkmanager --update $SdbProxyOptions
-    yes | tools/bin/sdkmanager $SdbProxyOptions "patcher;v4" "platform-tools" "platforms;android-29" "build-tools;29.0.2" "cmake;3.10.2.4988404" "ndk-bundle" "ndk;22.1.7171670"
+    wget --quiet https://developer.android.com/studio/index.html
+    if [ ! -f index.html ]; then echo ERROR: Unable to get Android Tools Version; exit 1; fi
+
+    androidCommandLineToolsPkgUrl=$(cat index.html | grep "commandlinetools-linux-" | grep href | cut -d\" -f 2)
+    androidCommandLineToolsPkgName=$(echo $androidCommandLineToolsPkgUrl | rev | cut -d\/ -f 1 | rev)
+    echo "Downloading Android Command Line Tools from: $androidCommandLineToolsPkgUrl"
+    wget --quiet $androidCommandLineToolsPkgUrl
+    echo "Unzipping $androidCommandLineToolsPkgName"
+    unzip -q $androidCommandLineToolsPkgName
+    SDK_MANAGER="$ROOT_DIR/Android/Sdk/cmdline-tools/bin/sdkmanager --sdk_root=$ROOT_DIR/Android/Sdk $SdbProxyOptions"
+    $SDK_MANAGER --update
+    yes | $SDK_MANAGER "patcher;v4" "platform-tools" "platforms;android-29" "build-tools;29.0.2" "cmake;3.10.2.4988404" "ndk-bundle" "ndk;22.1.7171670"
     cd -
   fi
 fi
@@ -43,17 +51,22 @@ fi
 if [ ! -d "$ANDROID_NDK" ]; then
   if [ -d "$ANDROID_SDK" ]; then
     NDK_DIR=$(find $ANDROID_SDK -maxdepth 2 -name ndk-build | sed 's/\/ndk-build//')
+    # Some sdk folder structures have extra <version> dir for ndk folders.
+    if [ ! -d "$NDK_DIR" ]; then
+      NDK_DIR=$(find $ANDROID_SDK -maxdepth 3 -name ndk-build | sed 's/\/ndk-build//')
+    fi
     if [ -d "$NDK_DIR" ]; then
       export ANDROID_NDK=$NDK_DIR
     fi
   fi
 fi
 
-if [ ! -d "$ROOT_DIR/gradle/gradle-5.4.1" ]; then
+GRADLE_VERSION=8.3
+if [ ! -d "$ROOT_DIR/gradle/gradle-$GRADLE_VERSION" ]; then
   mkdir -p $ROOT_DIR/gradle
   cd $ROOT_DIR/gradle
-  wget --quiet https://services.gradle.org/distributions/gradle-5.4.1-bin.zip
-  unzip -q gradle-5.4.1-bin.zip
+  wget --quiet https://services.gradle.org/distributions/gradle-$GRADLE_VERSION-bin.zip
+  unzip -q gradle-$GRADLE_VERSION-bin.zip
   cd -
 fi
 
@@ -61,6 +74,8 @@ GRADLE_PROPERTIES_FILE=gradle.properties
 if [ ! -f $GRADLE_PROPERTIES_FILE ]
 then
   echo "org.gradle.jvmargs=-Xmx1536m" > $GRADLE_PROPERTIES_FILE
+  echo "android.useAndroidX=true" >> $GRADLE_PROPERTIES_FILE
+  echo "android.enableJetifier=true" >> $GRADLE_PROPERTIES_FILE
   if [ ! -z $http_proxy ]
   then
     echo "systemProp.http.proxyHost=$proxyHost" >> $GRADLE_PROPERTIES_FILE
@@ -68,7 +83,9 @@ then
 
     if [ ! -z $https_proxy ]
     then
-      httpsProxyFull=${https_proxy/https:\/\/}
+      httpsProxyFull=$https_proxy
+      httpsProxyFull=${httpsProxyFull/https:\/\/}
+      httpsProxyFull=${httpsProxyFull/http:\/\/}
       httpsProxyHost=$(echo $httpsProxyFull | cut -d: -f 1)
       httpsProxyPort=$(echo $httpsProxyFull | cut -d: -f 2)
       echo "systemProp.https.proxyHost=$httpsProxyHost" >> $GRADLE_PROPERTIES_FILE
@@ -77,7 +94,7 @@ then
   fi
 fi
 
-export PATH=$PATH:$ROOT_DIR/gradle/gradle-5.4.1/bin
+export PATH=$PATH:$ROOT_DIR/gradle/gradle-$GRADLE_VERSION/bin
 [ ! -f local.properties ] && echo 'sdk.dir='$(echo $ANDROID_SDK) > local.properties
 
 repos="
@@ -102,7 +119,7 @@ rm -fR .building
 mkdir .building
 touch .building/$TARGET
 
-gradle wrapper
+gradle wrapper || exit 1
 if [ -z "$DEBUG" ]; then
 ./gradlew assembleRelease
 else
