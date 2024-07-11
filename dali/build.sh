@@ -14,18 +14,22 @@ if [ ! -d "$ANDROID_NDK" ]; then
 fi
 
 if [ "$1" = "clean" ]; then
-echo "Cleaning dali..."
-rm -rf ./dali-core
-rm -rf ./dali-adaptor
-rm -rf ./dali-toolkit
-exit 0
+  echo "Cleaning dali..."
+  rm -rf ./dali-core
+  rm -rf ./dali-adaptor
+  rm -rf ./dali-toolkit
+  exit 0
 fi
 
 if [ ! -z "$DEBUG" ]; then
-export ENABLE_TRACE=ON
+  export ENABLE_TRACE=ON
 fi
 
-ANDROID_PLATFORM=latest ANDROID_ABI=${TARGET} ./build_core.sh || exit 1
-ANDROID_PLATFORM=latest ANDROID_ABI=${TARGET} ./build_adaptor.sh || exit 1
-ANDROID_PLATFORM=latest ANDROID_ABI=${TARGET} ./build_toolkit.sh || exit 1
+export ANDROID_CMAKE_COMMAND=${ANDROID_SDK}/cmake/3.22.1/bin/cmake
+export ANDROID_PLATFORM=latest
+export ANDROID_ABI=${TARGET}
+
+./build_core.sh || exit 1
+./build_adaptor.sh || exit 1
+./build_toolkit.sh || exit 1
 
