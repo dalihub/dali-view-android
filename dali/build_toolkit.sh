@@ -31,6 +31,5 @@ else
 fi
 
 make -j8 install || exit 1
-cp -R ${DALI_DIR}/dali-toolkit/automated-tests/resources/fonts/* ${DALI_DIR}/dali-env/android/files/fonts
-
+cp -R ${DALI_DIR}/dali-toolkit/automated-tests/resources/fonts/* ${DALI_ENV_DIR}/files/fonts
 cd -
