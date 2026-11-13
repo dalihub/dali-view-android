@@ -10,6 +10,9 @@ set(ENV{PKG_CONFIG_PATH} "${DALI_ENV_DIR}/lib/${ANDROID_ABI}/pkgconfig:$ENV{PKG_
 set(ENV{PKG_CONFIG_PATH} "${DALI_ENV_DIR}/lib/${ANDROID_ABI}/pkgconfig:$ENV{PKG_CONFIG_PATH}")
 find_package(PkgConfig REQUIRED)
 
+# DALi installs its headers under include/dali3. That path comes first, so headers left in
+# include/dali by an older DALi cannot shadow the current ones.
+include_directories(${DALI_ENV_DIR}/include/dali3)
 include_directories(${DALI_ENV_DIR}/include)
 
 if (${CMAKE_BUILD_TYPE} STREQUAL "Debug")
@@ -22,8 +25,6 @@ if (EXISTS "${DALI_ENV_DIR}")
   pkg_check_modules(DALI_CORE dali3-core REQUIRED NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH)
   pkg_check_modules(DALI_ADAPTOR dali3-adaptor REQUIRED NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH)
   pkg_check_modules(DALI_TOOLKIT dali3-toolkit REQUIRED NO_CMAKE_PATH NO_CMAKE_ENVIRONMENT_PATH)
-  # The DALi headers are installed under include/dali3; the pkg-config files carry that path.
-  include_directories(${DALI_CORE_INCLUDE_DIRS} ${DALI_ADAPTOR_INCLUDE_DIRS} ${DALI_TOOLKIT_INCLUDE_DIRS})
 else()
   message(WARNING "${DALI_ENV_DIR} not found!")
 endif()
